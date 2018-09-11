@@ -31,7 +31,7 @@
 
       .Vertigo-dot {
         fill: #eee;
-        transition: all 1000ms;
+        transition: all 100ms;
       }
 
       canvas {
@@ -46,18 +46,18 @@
         color: #eee;
       }
 
-      .Converter-main {
+      .Converter-images {
         display: flex;
         flex-wrap: wrap;
       }
 
-      .Converter-main svg {
+      .Converter-images svg {
         display: block;
         width: 500px;
         height: 500px;
       }
 
-      .Converter-ui {
+      /* .Converter-ui {
         display: flex;
       }
 
@@ -146,11 +146,61 @@
         /* border: 1px solid #333; */
         background: rgba(255, 255, 255, 0.1);
         transition: height 0.25s;
-      }
+      } */
     </style>
   </head>
   <body>
     <div class="Converter">
+    </div>
+
+    <div class="Converter">
+      <div class="Converter-toolbar">
+        <label class="Converter-label" for="Converter-fileInput">
+          Select file to convert (png or jpg)
+          <input
+            type="file"
+            class="Converter-input Converter-input--file"
+            id="Converter-fileInput"
+          />
+        </label>
+        <label class="Converter-label" for="Converter-lowResCheckbox">
+          Low res
+          <input
+            type="checkbox"
+            class="Converter-input Converter-input--checkbox"
+            id="Converter-lowResCheckbox"
+          />
+        </label>
+        <div class="Converter-rangeInputWrapper">
+          Size of the SVG (in pixels)
+          <input
+            class="Converter-rangeInput"
+            id="Converter-sizeInput"
+            max="1000"
+            min="100"
+            name="size"
+            step="10"
+            type="range"
+            value="600"
+          />
+        </div>
+        <div class="Converter-rangeInputWrapper">
+          Resolution (number of concentric circles)
+          <input
+            class="Converter-rangeInput"
+            id="Converter-resolutionInput"
+            max="30"
+            min="10"
+            name="resolution"
+            step="1"
+            type="range"
+            value="25"
+          />
+        </div>
+      </div>
+      <div class="Converter-images" id="Converter-images">
+      </div>
+      <pre class="Converter-imageCode" id="Converter-imageCode"></pre>
     </div>
     <script src="lib/demo.js"></script>
   </body>

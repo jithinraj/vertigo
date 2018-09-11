@@ -30,6 +30,7 @@ export default class Vertigo {
     this.options = Object.assign(defaultOptions, options);
 
     // Half of the size is maximum radius / resolution
+    // TODO should I add 0.5 so everything fits in bounds of the SVG
     this.radiusGrowStep = this.options.size / 2 / this.options.resolution;
 
 
@@ -55,6 +56,7 @@ export default class Vertigo {
 
     this.svg.setAttribute('viewBox', `${ size / -2 } ${ size / -2 } ${ size } ${ size }`);
 
+    // TODO reuse existing dots
     this.removeDots();
     this.generateDots();
   }
@@ -63,13 +65,14 @@ export default class Vertigo {
     this.options.resolution = resolution;
     this.radiusGrowStep = this.options.size / 2 / this.options.resolution;
 
+    // TODO reuse existing dots
     this.removeDots();
     this.generateDots();
   }
 
   removeDots() {
-    this.dots.forEach(parallel => {
-      parallel.forEach(dot => {
+    this.dots.forEach(circle => {
+      circle.forEach(dot => {
         dot.element.remove();
       });
     });
@@ -114,11 +117,18 @@ export default class Vertigo {
     const shouldAnimate = animate && !this.options.quickTransition;
 
     const phases = shouldAnimate ?
-      [ [], [], [], [], [], [], [], [], [], [], ] : // 10 phases
+      [
+        // [], [], [], [], [], [], [], [], [], [], // 10 phases
+      ] :
       null;
 
-    this.dots.forEach((parallel, i) => {
-      parallel.forEach((dot, j) => {
+    let sum = 0;
+    const start = new Date();
+
+    this.dots.forEach((circle, i) => {
+      sum += i * 6;
+
+      circle.forEach((dot, j) => {
         const dotScale = image[i] ? image[i][j] : 1;
 
         if (dot.scale !== dotScale) {
@@ -129,8 +139,18 @@ export default class Vertigo {
 
           if (shouldAnimate) {
             // Push dot to the random phase
-            const phaseIndex = Math.floor(Math.random() * phases.length);
-            phases[phaseIndex].push(dot);
+            // const phaseIndex = Math.floor(Math.random() * phases.length);
+            // phases[phaseIndex].push(dot);
+
+            if (!phases[this.options.resolution - i]) {
+              phases[this.options.resolution - i] = [];
+            }
+            phases[this.options.resolution - i].push(dot);
+
+            // setTimeout(() => {
+            //   console.log(new Date() - start);
+            //   updateDot(dot);
+            // }, (sum + j));
           } else {
             // Update dot right away
             updateDot(dot);
@@ -144,7 +164,7 @@ export default class Vertigo {
       phases.forEach((dots, index) => {
         setTimeout(() => {
           requestAnimationFrame(() => dots.forEach(updateDot));
-        }, index * 100);
+        }, index * 50);
       });
     }
   }
